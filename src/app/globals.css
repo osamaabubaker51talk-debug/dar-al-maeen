@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #1B5E20;
+  --color-primary-light: #4CAF50;
+  --color-primary-dark: #0D3B12;
+  --color-gold: #D4AF37;
+  --color-gold-light: #E8D48B;
+  --color-gold-dark: #B8941E;
+  --color-navy: #1A237E;
+  --color-navy-light: #3949AB;
+  --color-cream: #F5F0E6;
+  --color-cream-dark: #E8E0D0;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Tajawal", "Amiri", system-ui, sans-serif;
+  --font-display: "Amiri", "Tajawal", serif;
+}
+
+:root {
+  --background: #F5F0E6;
+  --foreground: #1A237E;
+}
+
+[data-theme="dark"] {
+  --background: #0F1A2E;
+  --foreground: #F5F0E6;
+}
+
+[data-theme="golden"] {
+  --background: #F5F0E6;
+  --foreground: #1A237E;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Islamic geometric pattern background */
+.islamic-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23D4AF3715' stroke-width='0.5'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='%23D4AF3710' stroke-width='0.5'/%3E%3C/svg%3E");
+}
+
+/* Gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37, #E8D48B, #D4AF37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Islamic border ornament */
+.border-islamic {
+  border-image: repeating-linear-gradient(
+    90deg,
+    #D4AF37 0px,
+    #D4AF37 8px,
+    transparent 8px,
+    transparent 16px
+  ) 2;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B8941E;
+}

@@ -1,0 +1,615 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== المستخدمون ====================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  password      String?
+  provider      String?
+  role          UserRole  @default(USER)
+  readingStreak Int       @default(0) @map("reading_streak")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  accounts      Account[]
+  sessions      Session[]
+  subscriptions Subscription[]
+  downloads     Download[]
+  favorites     Favorite[]
+  comments      Comment[]
+  readingList   ReadingList[]
+  readingProgress ReadingProgress[]
+  highlights    BookHighlight[]
+  achievements  UserAchievement[]
+  bookClubMemberships BookClubMembership[]
+  readingChallenges ReadingChallengeParticipant[]
+  giftCards     GiftCard[]     @relation("receiver")
+  giftCardSent  GiftCard[]     @relation("sender")
+  notes         BookNote[]
+  polls         BookPollVote[]
+  orders        Order[]
+  discussionsCreated BookClubDiscussion[]
+  createdClubs  BookClub[]
+  bookClubReplies BookClubReply[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// ==================== الكتب ====================
+
+model Book {
+  id            String    @id @default(cuid())
+  title         String
+  titleAr       String    @map("title_ar")
+  slug          String    @unique
+  description   String?
+  descriptionAr String?   @map("description_ar")
+  author        String
+  authorAr      String    @map("author_ar")
+  authorId      String?   @map("author_id")
+  coverImage    String?   @map("cover_image")
+  pdfFile       String?   @map("pdf_file")
+  audioFile     String?   @map("audio_file")
+  previewPages  String?   @map("preview_pages")
+  price         Decimal?  @db.Decimal(10, 2)
+  isFree        Boolean   @default(false)
+  category      String
+  tags          String[]
+  isbn          String?
+  pages         Int?
+  duration      Int?
+  rating        Float     @default(0)
+  ratingCount   Int       @default(0) @map("rating_count")
+  publishDate   DateTime? @map("publish_date")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  downloads     Download[]
+  favorites     Favorite[]
+  comments      Comment[]
+  readingList   ReadingList[]
+  readingProgress ReadingProgress[]
+  highlights    BookHighlight[]
+  bundles       BookBundle[]
+  orders        Order[]
+  notes         BookNote[]
+  discussions   BookClubDiscussion[]
+
+  authorProfile Author?   @relation(fields: [authorId], references: [id])
+
+  @@map("books")
+}
+
+// ==================== المقالات ====================
+
+model Article {
+  id            String    @id @default(cuid())
+  title         String
+  titleAr       String    @map("title_ar")
+  slug          String    @unique
+  content       String
+  contentAr     String    @map("content_ar")
+  excerpt       String?
+  coverImage    String?   @map("cover_image")
+  author        String
+  category      ArticleCategory
+  isPublished   Boolean   @default(false) @map("is_published")
+  publishedAt   DateTime? @map("published_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("articles")
+}
+
+enum ArticleCategory {
+  NEWS
+  STUDY
+  POETRY
+  WEEKLY_PUBLICATION
+}
+
+// ==================== الكتّاب ====================
+
+model Author {
+  id            String    @id @default(cuid())
+  name          String
+  nameAr        String    @map("name_ar")
+  slug          String    @unique
+  bio           String?
+  bioAr         String?   @map("bio_ar")
+  image         String?
+  website       String?
+  socialLinks   Json?     @map("social_links")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  books         Book[]
+
+  @@map("authors")
+}
+
+// ==================== الاشتراكات والمشتركون ====================
+
+model Subscriber {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  country       String?
+  city          String?
+  interests     String[]
+  isActive      Boolean   @default(true) @map("is_active")
+  subscribedAt  DateTime  @default(now()) @map("subscribed_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("subscribers")
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  plan          PlanType
+  startDate     DateTime  @default(now()) @map("start_date")
+  endDate       DateTime? @map("end_date")
+  isActive      Boolean   @default(true) @map("is_active")
+  stripeId      String?   @map("stripe_id")
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
+
+enum PlanType {
+  FREE
+  BASIC
+  PREMIUM
+}
+
+// ==================== التفاعل ====================
+
+model Download {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  downloadedAt  DateTime  @default(now()) @map("downloaded_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("downloads")
+}
+
+model Favorite {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("favorites")
+}
+
+model Comment {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  content       String
+  rating        Int?
+  isApproved    Boolean   @default(false) @map("is_approved")
+  isFeatured    Boolean   @default(false) @map("is_featured")
+  adminReply    String?   @map("admin_reply")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("comments")
+}
+
+model BookHighlight {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  content       String
+  pageNumber    Int       @map("page_number")
+  color         String    @default("#FFEB3B")
+  note          String?
+  isPublic      Boolean   @default(false) @map("is_public")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@map("book_highlights")
+}
+
+model ReadingList {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("reading_list")
+}
+
+model ReadingProgress {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  currentPage   Int       @default(0) @map("current_page")
+  totalPages    Int       @default(0) @map("total_pages")
+  lastReadAt    DateTime  @default(now()) @map("last_read_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("reading_progress")
+}
+
+model BookNote {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String    @map("book_id")
+  content       String
+  pageNumber    Int?      @map("page_number")
+  isPublic      Boolean   @default(false) @map("is_public")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book      @relation(fields: [bookId], references: [id])
+
+  @@map("book_notes")
+}
+
+// ==================== الطلبات ====================
+
+model Order {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  bookId        String?   @map("book_id")
+  bundleId      String?   @map("bundle_id")
+  amount        Decimal   @db.Decimal(10, 2)
+  currency      String    @default("USD")
+  status        OrderStatus @default(PENDING)
+  orderType     OrderType @default(BOOK) @map("order_type")
+  stripeId      String?   @map("stripe_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  book          Book?     @relation(fields: [bookId], references: [id])
+  bundle        BookBundle? @relation(fields: [bundleId], references: [id])
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum OrderType {
+  BOOK
+  BUNDLE
+  SUBSCRIPTION
+}
+
+// ==================== الباقات ====================
+
+model BookBundle {
+  id            String    @id @default(cuid())
+  name          String
+  nameAr        String    @map("name_ar")
+  description   String?
+  coverImage    String?   @map("cover_image")
+  originalPrice Decimal   @db.Decimal(10, 2)
+  bundlePrice   Decimal   @db.Decimal(10, 2)
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  books         Book[]
+  orders        Order[]
+
+  @@map("book_bundles")
+}
+
+// ==================== Gamification ====================
+
+model BookClub {
+  id            String    @id @default(cuid())
+  name          String
+  nameAr        String    @map("name_ar")
+  description   String?
+  coverImage    String?   @map("cover_image")
+  creatorId     String    @map("creator_id")
+  maxMembers    Int       @default(20)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  members       BookClubMembership[]
+  discussions   BookClubDiscussion[]
+  creator       User      @relation(fields: [creatorId], references: [id])
+
+  @@map("book_clubs")
+}
+
+model BookClubMembership {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  clubId        String    @map("club_id")
+  role          ClubRole  @default(MEMBER)
+  joinedAt      DateTime  @default(now()) @map("joined_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  club          BookClub  @relation(fields: [clubId], references: [id])
+
+  @@unique([userId, clubId])
+  @@map("book_club_memberships")
+}
+
+enum ClubRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+model BookClubDiscussion {
+  id            String    @id @default(cuid())
+  clubId        String    @map("club_id")
+  bookId        String?   @map("book_id")
+  title         String
+  content       String
+  creatorId     String    @map("creator_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  club          BookClub  @relation(fields: [clubId], references: [id])
+  book          Book?     @relation(fields: [bookId], references: [id])
+  creator       User      @relation(fields: [creatorId], references: [id])
+  replies       BookClubReply[]
+
+  @@map("book_club_discussions")
+}
+
+model BookClubReply {
+  id            String    @id @default(cuid())
+  discussionId  String    @map("discussion_id")
+  userId        String    @map("user_id")
+  content       String
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  discussion    BookClubDiscussion @relation(fields: [discussionId], references: [id])
+
+  @@map("book_club_replies")
+}
+
+model ReadingChallenge {
+  id            String    @id @default(cuid())
+  name          String
+  nameAr        String    @map("name_ar")
+  description   String?
+  targetBooks   Int       @map("target_books")
+  startDate     DateTime  @map("start_date")
+  endDate       DateTime  @map("end_date")
+  rewardBadgeId String?   @map("reward_badge_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  participants  ReadingChallengeParticipant[]
+  rewardBadge   Achievement? @relation(fields: [rewardBadgeId], references: [id])
+
+  @@map("reading_challenges")
+}
+
+model ReadingChallengeParticipant {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  challengeId   String    @map("challenge_id")
+  currentBooks  Int       @default(0) @map("current_books")
+  isCompleted   Boolean   @default(false) @map("is_completed")
+  completedAt   DateTime? @map("completed_at")
+  joinedAt      DateTime  @default(now()) @map("joined_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  challenge     ReadingChallenge @relation(fields: [challengeId], references: [id])
+
+  @@unique([userId, challengeId])
+  @@map("reading_challenge_participants")
+}
+
+model Achievement {
+  id            String    @id @default(cuid())
+  name          String
+  nameAr        String    @map("name_ar")
+  description   String?
+  icon          String
+  criteria      Json
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  users         UserAchievement[]
+  challenges    ReadingChallenge[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  achievementId String    @map("achievement_id")
+  earnedAt      DateTime  @default(now()) @map("earned_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+// ==================== بطاقات الهدايا ====================
+
+model GiftCard {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  amount        Decimal   @db.Decimal(10, 2)
+  balance       Decimal   @db.Decimal(10, 2)
+  senderId      String?   @map("sender_id")
+  receiverId    String?   @map("receiver_id")
+  receiverEmail String?   @map("receiver_email")
+  message       String?
+  isUsed        Boolean   @default(false) @map("is_used")
+  expiresAt     DateTime? @map("expires_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  sender        User?     @relation("sender", fields: [senderId], references: [id])
+  receiver      User?     @relation("receiver", fields: [receiverId], references: [id])
+
+  @@map("gift_cards")
+}
+
+// ==================== الاستطلاعات ====================
+
+model BookPoll {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  options       Json
+  startDate     DateTime  @map("start_date")
+  endDate       DateTime? @map("end_date")
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  votes         BookPollVote[]
+
+  @@map("book_polls")
+}
+
+model BookPollVote {
+  id            String    @id @default(cuid())
+  pollId        String    @map("poll_id")
+  userId        String    @map("user_id")
+  optionIndex   Int       @map("option_index")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user          User      @relation(fields: [userId], references: [id])
+  poll          BookPoll  @relation(fields: [pollId], references: [id])
+
+  @@unique([pollId, userId])
+  @@map("book_poll_votes")
+}
+
+// ==================== أكواد الخصم ====================
+
+model DiscountCode {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  discountType  DiscountType @map("discount_type")
+  discountValue Decimal   @db.Decimal(10, 2)
+  minPurchase   Decimal?  @db.Decimal(10, 2) @map("min_purchase")
+  maxUses       Int?      @map("max_uses")
+  currentUses   Int       @default(0) @map("current_uses")
+  expiresAt     DateTime? @map("expires_at")
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("discount_codes")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+// ==================== الزوار ====================
+
+model Visitor {
+  id            String    @id @default(cuid())
+  ip            String?
+  userAgent     String?   @map("user_agent")
+  country       String?
+  city          String?
+  page          String
+  referrer      String?
+  visitedAt     DateTime  @default(now()) @map("visited_at")
+
+  @@map("visitors")
+}
+
+// ==================== سجل النشاط ====================
+
+model AuditLog {
+  id            String    @id @default(cuid())
+  userId        String?   @map("user_id")
+  action        String
+  entity        String
+  entityId      String?   @map("entity_id")
+  details       Json?
+  ipAddress     String?   @map("ip_address")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}
