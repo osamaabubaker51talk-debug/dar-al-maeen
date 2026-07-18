@@ -18,7 +18,7 @@ export function ThemeToggle() {
     golden: "✨",
   };
 
-  const current = themes.indexOf((theme as string) ?? "light");
+  const current = themes.indexOf((theme as "light" | "dark" | "golden") ?? "light");
   const next = themes[(current + 1) % themes.length];
 
   return (
