@@ -6,8 +6,6 @@ const navLinks = [
   { href: "/", label: "الرئيسية" },
   { href: "/books", label: "الكتب" },
   { href: "/authors", label: "الكتّاب" },
-  { href: "/news", label: "الأخبار" },
-  { href: "/studies", label: "الدراسات" },
   { href: "/about", label: "عن الدار" },
   { href: "/contact", label: "تواصل معنا" },
 ];
@@ -16,23 +14,23 @@ export async function Header() {
   const session = await auth();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gold/20 bg-primary/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold font-display text-lg font-bold text-primary-dark">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gold/10 dark:bg-navy/90">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark font-display text-lg font-bold text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-110">
             م
           </div>
-          <span className="font-display text-xl font-bold text-white">
+          <span className="font-display text-xl font-bold text-navy dark:text-white">
             دار المعين
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-white/80 transition-colors hover:text-gold"
+              className="relative px-4 py-2 text-sm font-medium text-navy/70 dark:text-white/70 transition-colors duration-300 hover:text-primary rounded-lg hover:bg-primary/5"
             >
               {link.label}
             </Link>
@@ -46,9 +44,9 @@ export async function Header() {
               href={
                 (session.user as { role?: string }).role === "ADMIN"
                   ? "/admin"
-                  : "/user"
+                  : "/dashboard"
               }
-              className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-primary-dark transition-colors hover:bg-gold-light"
+              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
             >
               {(session.user as { role?: string }).role === "ADMIN"
                 ? "لوحة التحكم"
@@ -57,7 +55,7 @@ export async function Header() {
           ) : (
             <Link
               href="/login"
-              className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-primary-dark transition-colors hover:bg-gold-light"
+              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
             >
               تسجيل الدخول
             </Link>

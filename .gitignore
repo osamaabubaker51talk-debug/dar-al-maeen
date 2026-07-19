@@ -43,3 +43,5 @@ next-env.d.ts
 /src/generated/prisma
 dev-error.log
 dev-output.log
+.vercel
+.env*
