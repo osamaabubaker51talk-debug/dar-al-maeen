@@ -1,15 +1,14 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getAdminSession, adminLogout } from "./auth-actions";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  if (!session) redirect("/login");
-  if ((session.user as { role?: string }).role !== "ADMIN") redirect("/");
+  const admin = await getAdminSession();
+  if (!admin) redirect("/admin/login");
 
   const sidebarLinks = [
     { href: "/admin", label: "الإحصائيات", icon: "📊" },
@@ -50,13 +49,26 @@ export default async function AdminLayout({
             </Link>
           ))}
         </nav>
-        <div className="border-t border-gold/20 p-4">
-          <Link
-            href="/"
-            className="text-sm text-navy/50 transition-colors hover:text-primary"
-          >
-            ← العودة للموقع
-          </Link>
+        <div className="border-t border-gold/20 p-4 space-y-3">
+          <div className="text-sm font-medium text-navy/70">
+            {admin.name}
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href="/"
+              className="flex-1 rounded-lg bg-cream py-2 text-center text-xs text-navy/50 transition-colors hover:bg-primary/10 hover:text-primary"
+            >
+              الموقع
+            </Link>
+            <form action={adminLogout} className="flex-1">
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-red-50 py-2 text-xs font-medium text-red-500 transition-colors hover:bg-red-100"
+              >
+                خروج
+              </button>
+            </form>
+          </div>
         </div>
       </aside>
 
@@ -68,7 +80,7 @@ export default async function AdminLayout({
               لوحة التحكم
             </h1>
             <span className="text-sm text-navy/50">
-              {session.user?.name ?? session.user?.email}
+              {admin.name}
             </span>
           </div>
         </div>
