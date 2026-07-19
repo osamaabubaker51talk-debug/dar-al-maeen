@@ -84,6 +84,9 @@ export async function updateBook(
   const isbn = (formData.get("isbn") as string) ?? "";
   const pagesStr = (formData.get("pages") as string) ?? "";
   const tagsRaw = (formData.get("tags") as string) ?? "";
+  const coverImage = (formData.get("coverImage") as string) || null;
+  const pdfFile = (formData.get("pdfFile") as string) || null;
+  const audioFile = (formData.get("audioFile") as string) || null;
 
   if (!id) return { error: "معرف الكتاب مطلوب" };
   if (!title || !titleAr || !author || !authorAr || !category) {
@@ -114,6 +117,9 @@ export async function updateBook(
       isbn: isbn || null,
       pages,
       tags,
+      coverImage,
+      pdfFile,
+      audioFile,
     },
   });
 

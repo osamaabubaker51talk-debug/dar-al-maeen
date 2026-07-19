@@ -14,17 +14,14 @@ export default async function AdminLayout({
   const sidebarLinks = [
     { href: "/admin", label: "الإحصائيات", icon: "📊" },
     { href: "/admin/books", label: "الكتب", icon: "📚" },
+    { href: "/admin/articles", label: "المقالات", icon: "📰" },
+    { href: "/admin/studies", label: "الدراسات", icon: "🔬" },
+    { href: "/admin/poetry", label: "الأشعار", icon: "🪶" },
+    { href: "/admin/publications", label: "المنشورات", icon: "📋" },
+    { href: "/admin/authors", label: "الكتّاب", icon: "✍️" },
     { href: "/admin/bundles", label: "الباقات", icon: "📦" },
-    { href: "/admin/content", label: "المحتوى", icon: "📰" },
-    { href: "/admin/authors", label: "الكتّاب", icon: "👤" },
     { href: "/admin/comments", label: "التعليقات", icon: "💬" },
-    { href: "/admin/subscribers", label: "المشتركون", icon: "👥" },
     { href: "/admin/orders", label: "الطلبات", icon: "🧾" },
-    { href: "/admin/discounts", label: "أكواد الخصم", icon: "🏷️" },
-    { href: "/admin/gamification", label: "Gamification", icon: "🏆" },
-    { href: "/admin/email", label: "البريد", icon: "📧" },
-    { href: "/admin/analytics", label: "التحليلات", icon: "📈" },
-    { href: "/admin/settings", label: "الإعدادات", icon: "⚙️" },
   ];
 
   return (

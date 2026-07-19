@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { FavoriteButton } from "@/components/ui/FavoriteButton";
 import { ReadingListButton } from "@/components/ui/ReadingListButton";
 import { CommentSection } from "@/components/ui/CommentSection";
+import { BuyButton } from "@/components/ui/BuyButton";
+import QRCode from "@/components/ui/QRCode";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +32,11 @@ export default async function BookDetailPage({
   });
 
   if (!book) notFound();
+
+  const h = await headers();
+  const host = h.get("host") ?? "localhost:3000";
+  const protocol = h.get("x-forwarded-proto") ?? "http";
+  const bookUrl = `${protocol}://${host}/books/${book.slug}`;
 
   let isFavorite = false;
   let isInList = false;
@@ -133,9 +141,11 @@ export default async function BookDetailPage({
                 <div className="mb-3 text-center text-2xl font-bold text-gold-dark">
                   ${book.price?.toString() ?? "0"}
                 </div>
-                <button className="mb-3 w-full rounded-xl bg-gold py-3 font-bold text-primary-dark transition-colors hover:bg-gold-light">
-                  شراء الكتاب
-                </button>
+                <BuyButton
+                  bookId={book.id}
+                  price={Number(book.price ?? 0)}
+                  title={book.titleAr}
+                />
               </>
             )}
 
@@ -176,6 +186,19 @@ export default async function BookDetailPage({
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* QR Code Section */}
+      <div className="mt-16 rounded-2xl border border-gold/20 bg-white p-8 shadow-sm">
+        <h2 className="mb-2 text-center font-display text-xl font-bold text-navy">
+          شارك الكتاب
+        </h2>
+        <p className="mb-6 text-center text-sm text-navy/50">
+          امسح الرمز للوصول لصفحة الكتاب
+        </p>
+        <div className="flex justify-center">
+          <QRCode value={bookUrl} size={180} />
         </div>
       </div>
     </div>

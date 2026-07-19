@@ -19,15 +19,42 @@ const statusColors: Record<string, string> = {
 };
 
 export default async function OrdersPage() {
-  const session = await auth();
-  if (!session?.user?.id) return null;
-  const userId = session.user.id;
+  let orders: Awaited<ReturnType<typeof fetchOrders>> = [];
+  let error = false;
+  let unauthenticated = false;
 
-  const orders = await prisma.order.findMany({
-    where: { userId },
-    include: { book: true },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      unauthenticated = true;
+    } else {
+      orders = await fetchOrders(session.user.id);
+    }
+  } catch {
+    error = true;
+  }
+
+  if (unauthenticated) {
+    return (
+      <div className="rounded-2xl border border-gold/10 bg-white py-16 text-center shadow-sm">
+        <p className="mb-3 text-lg text-navy/40">يرجى تسجيل الدخول أولاً</p>
+        <Link
+          href="/login"
+          className="inline-block rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-light"
+        >
+          تسجيل الدخول
+        </Link>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-2xl border border-red-100 bg-white py-16 text-center shadow-sm">
+        <p className="text-lg text-red-500">حدث خطأ في تحميل الطلبات</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -47,43 +74,55 @@ export default async function OrdersPage() {
           </Link>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-gold/10 bg-white shadow-sm">
-          <table className="w-full text-right text-sm">
-            <thead>
-              <tr className="border-b border-gold/10 bg-cream/50">
-                <th className="px-6 py-3 font-medium text-navy">التاريخ</th>
-                <th className="px-6 py-3 font-medium text-navy">الكتاب</th>
-                <th className="px-6 py-3 font-medium text-navy">المبلغ</th>
-                <th className="px-6 py-3 font-medium text-navy">الحالة</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id} className="border-b border-gold/5 last:border-0">
-                  <td className="px-6 py-4 text-navy/60">
-                    {new Date(order.createdAt).toLocaleDateString("ar-SA")}
-                  </td>
-                  <td className="px-6 py-4 font-medium text-navy">
-                    {order.book?.titleAr ?? "—"}
-                  </td>
-                  <td className="px-6 py-4 font-bold text-gold-dark">
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <div
+              key={order.id}
+              className="rounded-2xl border border-gold/10 bg-white p-5 shadow-sm transition-colors hover:border-gold/20"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cream text-xl">
+                    📖
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-navy">
+                      {order.book?.titleAr ?? order.book?.title ?? "كتاب"}
+                    </h3>
+                    <p className="text-sm text-navy/50">
+                      {new Date(order.createdAt).toLocaleDateString("ar-SA", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-lg font-bold text-gold-dark">
                     ${order.amount.toString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                        statusColors[order.status] ?? "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {statusLabels[order.status] ?? order.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </span>
+                  <span
+                    className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
+                      statusColors[order.status] ?? "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {statusLabels[order.status] ?? order.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
+}
+
+async function fetchOrders(userId: string) {
+  return prisma.order.findMany({
+    where: { userId },
+    include: { book: { select: { title: true, titleAr: true, slug: true } } },
+    orderBy: { createdAt: "desc" },
+  });
 }
