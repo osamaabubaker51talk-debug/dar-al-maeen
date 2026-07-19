@@ -12,9 +12,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-display text-xl font-bold text-white">
-              م
-            </div>
+            <img src="/logo.png" alt="دار المعين" className="h-12 w-12 rounded-full" />
           </Link>
           <h1 className="mt-4 font-display text-2xl font-bold text-navy">
             تسجيل الدخول

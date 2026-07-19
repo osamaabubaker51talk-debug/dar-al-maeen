@@ -12,8 +12,21 @@ const navLinks = [
   { href: "/contact", label: "تواصل معنا" },
 ];
 
-export function Header({ isLoggedIn, userRole }: { isLoggedIn: boolean; userRole?: string }) {
+export function Header({
+  isLoggedIn,
+  userRole,
+  userName,
+  userImage,
+  userEmail,
+}: {
+  isLoggedIn: boolean;
+  userRole?: string;
+  userName?: string | null;
+  userImage?: string | null;
+  userEmail?: string | null;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const initials = (userName ?? userEmail ?? "م").charAt(0);
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gold/10 dark:bg-navy/90" role="banner">
@@ -43,9 +56,18 @@ export function Header({ isLoggedIn, userRole }: { isLoggedIn: boolean; userRole
           {isLoggedIn ? (
             <Link
               href={userRole === "ADMIN" ? "/admin" : "/dashboard"}
-              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
+              className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-all duration-300 hover:bg-primary/20"
             >
-              {userRole === "ADMIN" ? "لوحة التحكم" : "حسابي"}
+              {userImage ? (
+                <img src={userImage} alt="" className="h-7 w-7 rounded-full object-cover" />
+              ) : (
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
+                  {initials}
+                </div>
+              )}
+              <span className="hidden sm:inline">
+                {userRole === "ADMIN" ? "لوحة التحكم" : "حسابي"}
+              </span>
             </Link>
           ) : (
             <Link
@@ -93,6 +115,15 @@ export function Header({ isLoggedIn, userRole }: { isLoggedIn: boolean; userRole
               {link.label}
             </Link>
           ))}
+          {isLoggedIn && (
+            <Link
+              href={userRole === "ADMIN" ? "/admin" : "/dashboard"}
+              onClick={() => setMobileOpen(false)}
+              className="block px-4 py-3 text-sm font-bold text-primary rounded-lg hover:bg-primary/5"
+            >
+              {userRole === "ADMIN" ? "لوحة التحكم" : "حسابي"}
+            </Link>
+          )}
         </nav>
       )}
     </header>

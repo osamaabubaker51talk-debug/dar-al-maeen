@@ -17,20 +17,13 @@ export default async function ReadingListPage() {
 
   return (
     <div>
-      <h2 className="mb-6 font-display text-xl font-bold text-navy">
-        قائمة القراءة
-      </h2>
+      <h2 className="mb-6 font-display text-xl font-bold text-navy">قائمة القراءة</h2>
 
       {items.length === 0 ? (
         <div className="rounded-2xl border border-gold/10 bg-white py-16 text-center shadow-sm">
           <div className="mb-3 text-4xl">📋</div>
-          <p className="mb-3 text-lg text-navy/40">
-            قائمة القراءة فارغة
-          </p>
-          <Link
-            href="/books"
-            className="inline-block rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-light"
-          >
+          <p className="mb-3 text-lg text-navy/40">قائمة القراءة فارغة</p>
+          <Link href="/books" className="inline-block rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-light">
             تصفح الكتب
           </Link>
         </div>
@@ -42,24 +35,20 @@ export default async function ReadingListPage() {
               href={`/books/${item.book.slug}`}
               className="group overflow-hidden rounded-2xl border border-gold/10 bg-white shadow-sm transition-all hover:shadow-md"
             >
-              <div className="aspect-[3/4] bg-cream" />
+              {item.book.coverImage ? (
+                <img src={item.book.coverImage} alt={item.book.titleAr} className="aspect-[3/4] w-full object-cover" />
+              ) : (
+                <div className="flex aspect-[3/4] items-center justify-center bg-cream"><span className="text-4xl">📖</span></div>
+              )}
               <div className="p-4">
-                <h3 className="mb-1 font-display text-base font-bold text-navy group-hover:text-primary">
-                  {item.book.titleAr}
-                </h3>
+                <h3 className="mb-1 font-display text-base font-bold text-navy group-hover:text-primary">{item.book.titleAr}</h3>
                 <p className="text-sm text-navy/50">{item.book.authorAr}</p>
                 <div className="mt-3 flex items-center justify-between">
-                  <span className="text-xs text-navy/40">
-                    {item.book.category}
-                  </span>
+                  <span className="text-xs text-navy/40">{item.book.category}</span>
                   {item.book.isFree ? (
-                    <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                      مجاني
-                    </span>
+                    <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">مجاني</span>
                   ) : (
-                    <span className="text-sm font-bold text-gold-dark">
-                      ${item.book.price?.toString() ?? "0"}
-                    </span>
+                    <span className="text-sm font-bold text-gold-dark">${item.book.price?.toString() ?? "0"}</span>
                   )}
                 </div>
               </div>

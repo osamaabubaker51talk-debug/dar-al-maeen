@@ -57,13 +57,16 @@ export async function registerUser(
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
+    if (existing.provider === "google") {
+      return { error: "هذا البريد مرتبط بحساب Google. سجّل الدخول بـ Google بدلاً من ذلك." };
+    }
     return { error: "البريد الإلكتروني مستخدم بالفعل" };
   }
 
   const hashed = await bcrypt.hash(password, 12);
 
   await prisma.user.create({
-    data: { name, email, password: hashed },
+    data: { name, email, password: hashed, provider: "credentials" },
   });
 
   try {
