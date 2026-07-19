@@ -30,9 +30,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-gold to-gold-dark font-display text-lg font-bold text-navy">
-                م
-              </div>
+              <img src="/logo.png" alt="دار المعين" className="h-10 w-10 rounded-full" />
               <span className="font-display text-lg font-bold">دار المعين</span>
             </div>
             <p className="text-sm text-white/50 leading-relaxed mb-6">

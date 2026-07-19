@@ -17,9 +17,7 @@ export async function Header() {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gold/10 dark:bg-navy/90">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark font-display text-lg font-bold text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-110">
-            م
-          </div>
+          <img src="/logo.png" alt="دار المعين" className="h-10 w-10 transition-transform duration-300 group-hover:scale-110 rounded-full" />
           <span className="font-display text-xl font-bold text-navy dark:text-white">
             دار المعين
           </span>
