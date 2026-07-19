@@ -5,17 +5,25 @@ import Hero3D from "@/components/three/Hero3D";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const featuredBooks = await prisma.book.findMany({
-    take: 6,
-    orderBy: { createdAt: "desc" },
-    where: { isFree: true },
-  });
+  let featuredBooks: any[] = [];
+  let recentArticles: any[] = [];
 
-  const recentArticles = await prisma.article.findMany({
-    take: 4,
-    where: { isPublished: true },
-    orderBy: { publishedAt: "desc" },
-  });
+  try {
+    [featuredBooks, recentArticles] = await Promise.all([
+      prisma.book.findMany({
+        take: 6,
+        orderBy: { createdAt: "desc" },
+        where: { isFree: true },
+      }),
+      prisma.article.findMany({
+        take: 4,
+        where: { isPublished: true },
+        orderBy: { publishedAt: "desc" },
+      }),
+    ]);
+  } catch {
+    // Database unavailable — render homepage without dynamic content
+  }
 
   return (
     <div className="islamic-pattern">
