@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getAdminSession, adminLogout } from "./auth-actions";
+import { getAdminSession, adminLogout } from "@/lib/admin-auth";
 
 export default async function AdminLayout({
   children,
