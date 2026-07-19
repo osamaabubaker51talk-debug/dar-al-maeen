@@ -2,6 +2,8 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 const statusLabels: Record<string, string> = {
   PENDING: "قيد الانتظار",
   COMPLETED: "مكتمل",

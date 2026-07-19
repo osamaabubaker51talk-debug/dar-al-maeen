@@ -2,6 +2,8 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import Hero3D from "@/components/three/Hero3D";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const featuredBooks = await prisma.book.findMany({
     take: 6,

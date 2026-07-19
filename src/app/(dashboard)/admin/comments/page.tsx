@@ -1,6 +1,8 @@
 import prisma from "@/lib/prisma";
 import { approveComment, deleteComment } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCommentsPage() {
   const comments = await prisma.comment.findMany({
     include: { user: true, book: true },

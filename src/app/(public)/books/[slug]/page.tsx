@@ -6,6 +6,8 @@ import { FavoriteButton } from "@/components/ui/FavoriteButton";
 import { ReadingListButton } from "@/components/ui/ReadingListButton";
 import { CommentSection } from "@/components/ui/CommentSection";
 
+export const dynamic = "force-dynamic";
+
 export default async function BookDetailPage({
   params,
 }: {
