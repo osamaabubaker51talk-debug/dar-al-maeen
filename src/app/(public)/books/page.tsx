@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "المكتبة",
+  description: "تصفح مجموعة كتب دار المعين للنشر في التفسير والحديث والفقه والسيرة والدعوة. كتب إسلامية موثوقة للباحثين والدارسين.",
+  openGraph: {
+    title: "المكتبة | دار المعين للنشر",
+    description: "تصفح مجموعة كتبنا في التفسير والحديث والفقه والسيرة والدعوة.",
+  },
+};
 
 export default async function BooksPage({
   searchParams,

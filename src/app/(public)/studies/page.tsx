@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "الدراسات",
+  description: "تصفح الدراسات التأصيلية في دار المعين للنشر. أبحاث ومقالات في المجالات العلمية والنبوية والتربوية والدعوية.",
+  openGraph: {
+    title: "الدراسات | دار المعين للنشر",
+    description: "دراسات تأصيلية في المجالات العلمية والنبوية والتربوية والدعوية.",
+  },
+};
 
 export default async function StudiesPage() {
   let studies: {

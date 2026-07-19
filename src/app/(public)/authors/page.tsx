@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "الكتّاب",
+  description: "تصفح قائمة كتّاب دار المعين للنشر. معلومات عن المؤلفين والباحثين المشاركين في إخراج الكتب.",
+  openGraph: {
+    title: "الكتّاب | دار المعين للنشر",
+    description: "تعرف على كتّابنا ومؤلفينا.",
+  },
+};
 
 export default async function AuthorsPage() {
   let authors: Awaited<ReturnType<typeof prisma.author.findMany>> = [];

@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "الأشعار",
+  description: "تصفح قصائد وأشعار دار المعين للنشر. شعر إسلامي ي握住 المعاني العالية والقيم النبيلة.",
+  openGraph: {
+    title: "الأشعار | دار المعين للنشر",
+    description: "شعر إسلامي في مدح النبي ﷺ وال信仰.",
+  },
+};
 
 export default async function PoetryPage() {
   let poems: {

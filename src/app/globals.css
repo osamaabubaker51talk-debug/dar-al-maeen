@@ -264,3 +264,87 @@ body {
 [data-theme="dark"] .bg-cream {
   background-color: rgba(26, 35, 126, 0.2);
 }
+
+/* ===== ACCESSIBILITY ===== */
+
+/* Focus visible ring for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to content (screen reader only until focused) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus,
+.sr-only.focus\:not-sr-only:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: auto;
+  height: auto;
+  padding: 0.75rem 1.5rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: #1B5E20;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  z-index: 100;
+  border-radius: 0.5rem;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  header, footer, nav, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+/* ===== PERFORMANCE ===== */
+
+/* Content visibility for below-the-fold sections */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Lazy image loading */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded,
+img[loading="lazy"]:not([src=""]) {
+  opacity: 1;
+}

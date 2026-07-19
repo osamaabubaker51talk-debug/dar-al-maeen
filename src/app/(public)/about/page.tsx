@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "عن الدار",
+  description: "تعرف على دار المعين للنشر - مؤسسة ثقافية تعنى بالدراسات التأصيلية في المجالات العلمية والنبوية والتربوية والدعوية تحقيقاً وطباعة ونشر.",
+  openGraph: {
+    title: "عن الدار | دار المعين للنشر",
+    description: "مؤسسة ثقافية تعنى بالدراسات التأصيلية في المجالات العلمية والنبوية والتربوية والدعوية.",
+  },
+};
+
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-16">

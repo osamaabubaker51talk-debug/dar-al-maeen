@@ -1,0 +1,24 @@
+{
+  "name": "دار المعين للنشر",
+  "short_name": "دار المعين",
+  "description": "مؤسسة تعنى بالدراسات التأصيلية في المجالات العلمية والنبوية والتربوية والدعوية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F0E6",
+  "theme_color": "#1B5E20",
+  "orientation": "any",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

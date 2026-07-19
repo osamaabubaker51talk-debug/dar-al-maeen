@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "تواصل معنا",
+  description: "تواصل مع دار المعين للنشر. هاتف: 07 7105 5010. بغداد، العراق. انستغرام وتويتر: @dar_almueein.",
+  openGraph: {
+    title: "تواصل معنا | دار المعين للنشر",
+    description: "تواصل معنا عبر الهاتف أو وسائل التواصل الاجتماعي.",
+  },
+};
+
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16">
